@@ -34,7 +34,8 @@ class AlignedDataset(BaseDataset):
       
     def __getitem__(self, index):        
         ### input A (label maps)
-        A_path = self.A_paths[index]              
+        A_path = self.A_paths[index]       
+        # Image loading       
         A = Image.open(A_path)        
         params = get_params(self.opt, A.size)
         if self.opt.label_nc == 0:
