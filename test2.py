@@ -8,6 +8,8 @@ import util.util as util
 from util.visualizer import Visualizer
 from util import html
 import torch
+from PIL import Image
+import numpy as np
 
 opt = TestOptions().parse(save=False)
 opt.nThreads = 1   # test code only supports nThreads = 1
@@ -25,16 +27,49 @@ if opt.data_type == 16:
 elif opt.data_type == 8:
     model.type(torch.uint8)
 
-if opt.data_type == 16:
-    data['label'] = data['label'].half()
-    data['inst'] = data['inst'].half()
-elif opt.data_type == 8:
-    data['label'] = data['label'].uint8()
-    data['inst'] = data['inst'].uint8()
+def scale_width(img, target_width, method=Image.BICUBIC):
+    ow, oh = img.size
+    if (ow == target_width):
+        return img    
+    w = target_width
+    h = int(target_width * oh / ow)    
+    return img.resize((w, h), method)
+
+def crop(img, pos, size):
+    ow, oh = img.size
+    x1, y1 = pos
+    tw, th = size
+    if (ow > tw or oh > th):        
+        return img.crop((x1, y1, x1 + tw, y1 + th))
+    return img
 
 def main():
-    generated = model.inference(data['label'], data['inst'], data['image'])
+    print(dataset)
+    
+    image = Image.open('./datasets/cityscapes/test_A/1_I.jpg')
+    # image = scale_width(image, 2048)
+    # image = crop(image, (0, 1080 - 1024), (2048, 1024))
+    image_tensor = dataset.dataset.image2tensor(image)
+    # image.show()
+    image = np.asarray(image)
+    print(image)
+    # (1, 1, 1024, 2048)
+    # image = torch.tensor(image, dtype=torch.uint8)
+    print(image)
+    print(image.shape)
 
+    generated = model.inference(
+        image_tensor,
+        image_tensor,
+    )
+
+    print(generated)
+    print(generated.shape)
+    output = util.tensor2im(generated)
+    print(output)
+    print(output.shape)
+    output = Image.fromarray(np.uint8(output)).convert('RGB')
+    output.show()
 
 
 if __name__ == '__main__':

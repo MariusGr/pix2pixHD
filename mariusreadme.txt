@@ -22,11 +22,13 @@ Testen mit Inference:
 
 python test.py --name label2city_1024p --netG local --ngf 32 --resize_or_crop none
 
+Auf Marius' Shrottmühle:
+python test.py --name label2city_1024p
 
 
 Zum Training mit voller Auflösung (min. VRAM 24GB, 16GB mit "mixed precision"):
 
-python test.py --name label2city_1024p --netG local --ngf 32 --resize_or_crop none
+python train.py --name label2city_1024p --label_nc 0 --no_instance
 
 
 

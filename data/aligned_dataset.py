@@ -31,6 +31,11 @@ class AlignedDataset(BaseDataset):
             self.feat_paths = sorted(make_dataset(self.dir_feat))
 
         self.dataset_size = len(self.A_paths) 
+
+    def image2tensor(self, image):
+        params = get_params(self.opt, image.size)
+        transform_A = get_transform(self.opt, params)
+        return transform_A(image.convert('RGB'))
       
     def __getitem__(self, index):        
         ### input A (label maps)

@@ -39,49 +39,54 @@ else:
 
 
 def main():
+    print(dataset)
     for i, data in enumerate(dataset):
         print(i, data)
         if i >= opt.how_many:
             break
-    if opt.data_type == 16:
-        data['label'] = data['label'].half()
-        data['inst'] = data['inst'].half()
-    elif opt.data_type == 8:
-        data['label'] = data['label'].uint8()
-        data['inst'] = data['inst'].uint8()
-    if opt.export_onnx:
-        print("Exporting to ONNX: ", opt.export_onnx)
-        assert opt.export_onnx.endswith(
-            "onnx"), "Export model file should end with .onnx"
-        torch.onnx.export(model, [data['label'], data['inst']],
-                          opt.export_onnx, verbose=True)
-        exit(0)
-    minibatch = 1
-    if opt.engine:
-        generated = run_trt_engine(opt.engine, minibatch, [
-                                   data['label'], data['inst']])
-    elif opt.onnx:
-        generated = run_onnx(opt.onnx, opt.data_type, minibatch, [
-                             data['label'], data['inst']])
-    else:
-        print("-------------------------------------------")
-        print("-------------------------------------------")
-        print("-------------------------------------------")
-        print(data['label'])
-        print(data['inst'])
-        print(data['image'])
-        print("-------------------------------------------")
-        print("-------------------------------------------")
-        print("-------------------------------------------")
-        generated = model.inference(data['label'], data['inst'], data['image'])
-        print("##############################")
-        print("##############################")
-        print("##############################")
-        print(generated)
-        print(util.tensor2im(generated.data[0]))
-        print("##############################")
-        print("##############################")
-        print("##############################")
+
+        if opt.data_type == 16:
+            data['label'] = data['label'].half()
+            data['inst'] = data['inst'].half()
+        elif opt.data_type == 8:
+            data['label'] = data['label'].uint8()
+            data['inst'] = data['inst'].uint8()
+        if opt.export_onnx:
+            print("Exporting to ONNX: ", opt.export_onnx)
+            assert opt.export_onnx.endswith(
+                "onnx"), "Export model file should end with .onnx"
+            torch.onnx.export(model, [data['label'], data['inst']],
+                            opt.export_onnx, verbose=True)
+            exit(0)
+        minibatch = 1
+        if opt.engine:
+            generated = run_trt_engine(opt.engine, minibatch, [
+                                    data['label'], data['inst']])
+        elif opt.onnx:
+            generated = run_onnx(opt.onnx, opt.data_type, minibatch, [
+                                data['label'], data['inst']])
+        else:
+            print("-------------------------------------------")
+            print("-------------------------------------------")
+            print("-------------------------------------------")
+            print(data['label'])
+            print(data['inst'])
+            print(data['image'])
+            # for i in data['label'].flatten():
+            #     if i != 3:
+            #         print(i)
+            print("-------------------------------------------")
+            print("-------------------------------------------")
+            print("-------------------------------------------")
+            generated = model.inference(data['label'], data['inst'], data['image'])
+            print("##############################")
+            print("##############################")
+            print("##############################")
+            print(generated)
+            print(util.tensor2im(generated.data[0]))
+            print("##############################")
+            print("##############################")
+            print("##############################")
 
     visuals = OrderedDict([('input_label', util.tensor2label(data['label'][0], opt.label_nc)),
                            ('synthesized_image', util.tensor2im(generated.data[0]))])
