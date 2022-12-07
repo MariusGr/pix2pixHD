@@ -26,6 +26,9 @@ Auf Marius' Shrottmühle:
 python test.py --name label2city_1024p
 
 
+python test2.py --name label2city_1024p --no_instance --label_nc 0 --resize_or_crop crop --fineSize 1024
+
+
 Zum Training mit voller Auflösung (min. VRAM 24GB, 16GB mit "mixed precision"):
 
 python train.py --name label2city_1024p --label_nc 0 --no_instance

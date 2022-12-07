@@ -23,6 +23,19 @@ def tensor2im(image_tensor, imtype=np.uint8, normalize=True):
         image_numpy = image_numpy[:,:,0]
     return image_numpy.astype(imtype)
 
+# Converts a Tensor into a Numpy array
+# |imtype|: the desired type of the converted numpy array
+def tensor2image2(image_tensor, imtype=np.uint8, normalize=True):
+    image_numpy = image_tensor.cpu().float().detach().numpy()
+    if normalize:
+        image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + 1) / 2.0 * 255.0
+    else:
+        image_numpy = np.transpose(image_numpy, (1, 2, 0)) * 255.0      
+    image_numpy = np.clip(image_numpy, 0, 255)
+    if image_numpy.shape[2] == 1 or image_numpy.shape[2] > 3:        
+        image_numpy = image_numpy[:,:,0]
+    return image_numpy.astype(imtype)
+
 # Converts a one-hot tensor into a colorful label map
 def tensor2label(label_tensor, n_label, imtype=np.uint8):
     if n_label == 0:

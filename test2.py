@@ -50,13 +50,15 @@ def main():
     # image = scale_width(image, 2048)
     # image = crop(image, (0, 1080 - 1024), (2048, 1024))
     image_tensor = dataset.dataset.image2tensor(image)
-    # image.show()
-    image = np.asarray(image)
+    # image = np.asarray(image)
+    # print(image)
+    # # (1, 1, 1024, 2048)
+    # # image = torch.tensor(image, dtype=torch.uint8)
     print(image)
-    # (1, 1, 1024, 2048)
-    # image = torch.tensor(image, dtype=torch.uint8)
-    print(image)
-    print(image.shape)
+    print(image.size)
+    print("-"*100)
+    print(image_tensor)
+    print(image_tensor.size())
 
     generated = model.inference(
         image_tensor,
