@@ -73,8 +73,8 @@ def main():
     print(output.shape)
     output = Image.fromarray(np.uint8(output)).convert('RGB')
 
-    display(output)
-    # output.show()
+    output.save("output.jpg", "JPEG")
+    output.show()
 
 
 if __name__ == '__main__':
