@@ -10,6 +10,7 @@ from util import html
 import torch
 from PIL import Image
 import numpy as np
+from matplotlib.pyplot import imshow
 
 opt = TestOptions().parse(save=False)
 opt.nThreads = 1   # test code only supports nThreads = 1
@@ -71,7 +72,9 @@ def main():
     print(output)
     print(output.shape)
     output = Image.fromarray(np.uint8(output)).convert('RGB')
-    output.show()
+
+    imshow(np.asarray(output))
+    # output.show()
 
 
 if __name__ == '__main__':
