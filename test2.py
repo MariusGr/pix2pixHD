@@ -73,7 +73,7 @@ def main():
     print(output.shape)
     output = Image.fromarray(np.uint8(output)).convert('RGB')
 
-    imshow(np.asarray(output))
+    display(output)
     # output.show()
 
 
