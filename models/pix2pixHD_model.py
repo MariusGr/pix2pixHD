@@ -162,6 +162,23 @@ class Pix2PixHDModel(BaseModel):
             input_concat = input_label
         fake_image = self.netG.forward(input_concat)
 
+        # print("input_label", input_label.shape)
+        # print("test_image", fake_image.shape)
+        fake_image = fake_image[
+            0:input_label.shape[0],
+            0:input_label.shape[1],
+            0:input_label.shape[2],
+            0:input_label.shape[3]
+        ]
+        real_image = real_image[
+            0:input_label.shape[0],
+            0:input_label.shape[1],
+            0:input_label.shape[2],
+            0:input_label.shape[3]
+        ]
+        # print("test_image after", fake_image.shape)
+        # print("--------------------------------------------")
+
         # Fake Detection and Loss
         pred_fake_pool = self.discriminate(input_label, fake_image, use_pool=True)
         loss_D_fake = self.criterionGAN(pred_fake_pool, False)        
