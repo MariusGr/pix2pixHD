@@ -60,17 +60,18 @@ class Pix2PixHDModel(BaseModel):
             print("---------- Loading pretrained model ----------")           
             print("---------- Loading pretrained model ----------")           
             print("---------- Loading pretrained model ----------")           
-            print(pretrained_path)           
-            print("----------                          ----------")           
-            print("----------                          ----------")           
-            print("----------                          ----------")           
-            print("----------                          ----------")           
-
+            print("pretrained_path:", pretrained_path)           
+                    
             self.load_network(self.netG, 'G', opt.which_epoch, pretrained_path)            
             if self.isTrain:
                 self.load_network(self.netD, 'D', opt.which_epoch, pretrained_path)  
             if self.gen_features:
-                self.load_network(self.netE, 'E', opt.which_epoch, pretrained_path)   
+                self.load_network(self.netE, 'E', opt.which_epoch, pretrained_path)
+
+            print("----------                          ----------")           
+            print("----------                          ----------")           
+            print("----------                          ----------")           
+            print("----------                          ----------")     
 
         # set loss functions and optimizers
         if self.isTrain:
