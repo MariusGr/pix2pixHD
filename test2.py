@@ -47,7 +47,7 @@ def crop(img, pos, size):
 def main():
     print(dataset)
     
-    image = Image.open('./datasets/cityscapes/test_A/1_I.jpg')
+    image = Image.open('./datasets/cityscapes/train_A/1_I.jpg')
     # image = scale_width(image, 2048)
     # image = crop(image, (0, 1080 - 1024), (2048, 1024))
     image_tensor = dataset.dataset.image2tensor(image)
