@@ -40,6 +40,13 @@ def main():
     print('#training images = %d' % dataset_size)
 
     model = create_model(opt)
+
+    def save_model():
+        print('saving the model...')        
+        model.module.save('latest')
+        model.module.save(epoch)
+        np.savetxt(iter_path, (epoch+1, 0), delimiter=',', fmt='%d')
+
     visualizer = Visualizer(opt)
     if opt.fp16:    
         from apex import amp
@@ -129,9 +136,7 @@ def main():
         ### save model for this epoch
         if epoch % opt.save_epoch_freq == 0:
             print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))        
-            model.module.save('latest')
-            model.module.save(epoch)
-            np.savetxt(iter_path, (epoch+1, 0), delimiter=',', fmt='%d')
+            save_model()
 
         ### instead of only training the local enhancer, train the entire network after certain iterations
         if (opt.niter_fix_global != 0) and (epoch == opt.niter_fix_global):
@@ -140,6 +145,8 @@ def main():
         ### linearly decay learning rate after certain iterations
         if epoch > opt.niter:
             model.module.update_learning_rate()
+        
+    save_model()
 
 if __name__ == '__main__':
     main()
