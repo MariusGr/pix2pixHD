@@ -1,5 +1,7 @@
 import os
 from collections import OrderedDict
+from os.path import isfile
+
 from torch.autograd import Variable
 from options.test_options import TestOptions
 from data.data_loader import CreateDataLoader
@@ -10,6 +12,7 @@ from util import html
 import torch
 from PIL import Image
 import numpy as np
+import dir_helper
 from matplotlib.pyplot import imshow
 
 opt = TestOptions().parse(save=False)
@@ -46,35 +49,42 @@ def crop(img, pos, size):
 
 def main():
     print(dataset)
-    
-    image = Image.open('./datasets/cityscapes/train_A/1_I.jpg')
-    # image = scale_width(image, 2048)
-    # image = crop(image, (0, 1080 - 1024), (2048, 1024))
-    image_tensor = dataset.dataset.image2tensor(image)
-    # image = np.asarray(image)
-    # print(image)
-    # # (1, 1, 1024, 2048)
-    # # image = torch.tensor(image, dtype=torch.uint8)
-    print(image)
-    print(image.size)
-    print("-"*100)
-    print(image_tensor)
-    print(image_tensor.size())
+    onlyfiles = [os.path.join('./datasets/cityscapes/train_A/', f) for f in os.listdir('./datasets/cityscapes/train_A/')]
+    print(onlyfiles)
+    for file in onlyfiles:
+        image = Image.open(file)
+        # image = scale_width(image, 2048)
+        # image = crop(image, (0, 1080 - 1024), (2048, 1024))
+        image_tensor = dataset.dataset.image2tensor(image)
+        # image = np.asarray(image)
+        # print(image)
+        # # (1, 1, 1024, 2048)
+        # # image = torch.tensor(image, dtype=torch.uint8)
+        print(image)
+        print(image.size)
+        print("-"*100)
+        print(image_tensor)
+        print(image_tensor.size())
 
-    generated = model.inference(
-        image_tensor,
-        image_tensor,
-    )
+        generated = model.inference(
+            image_tensor,
+            image_tensor,
+        )
 
-    print(generated)
-    print(generated.shape)
-    output = util.tensor2im(generated)
-    print(output)
-    print(output.shape)
-    output = Image.fromarray(np.uint8(output)).convert('RGB')
+        print(generated)
+        print(generated.shape)
+        output = util.tensor2im(generated)
+        print(output)
+        print(output.shape)
+        output = Image.fromarray(np.uint8(output)).convert('RGB')
 
-    output.save("output.jpg", "JPEG")
-    output.show()
+        dir_helper.create_dir("./generated")
+
+        pathname, extension = os.path.splitext(file)
+        name = pathname.split('/')[-1]
+
+        output.save("generated/output_"+name+".jpg", "JPEG")
+        #output.show()
 
 
 if __name__ == '__main__':
